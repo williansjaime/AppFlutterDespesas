@@ -11,11 +11,23 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 300,
-      child: ListView.builder(
+      child: transaction.isEmpty ? 
+      Column(
+        children: <Widget>[
+        SizedBox(height: 20,),  
+        Text('Nenhum Transação Cadastrar!',
+        style: Theme.of(context).textTheme.titleLarge,),
+        SizedBox(height: 20,),
+        Container(
+          height:200,
+          child:Image.asset('assets/images/waiting.png',fit: BoxFit.cover,),),],
+      ) 
+      
+      :ListView.builder(
         itemCount: transaction.length,
         itemBuilder: (ctx, index) {
           final tr = transaction[index];
-          return Card(
+            return Card(
             child: Row(children: <Widget>[
               Container(
                 margin: EdgeInsets.symmetric(
@@ -24,7 +36,7 @@ class TransactionList extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                     border: Border.all(
-                  color: Colors.purple,
+                  color: Theme.of(context).colorScheme.primary,
                   width: 2,
                 )),
                 padding: EdgeInsets.all(10),
@@ -33,7 +45,7 @@ class TransactionList extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    color: Colors.purple,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
@@ -42,10 +54,7 @@ class TransactionList extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     tr.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   Text(
                     DateFormat('d MMM y').format(tr.date),

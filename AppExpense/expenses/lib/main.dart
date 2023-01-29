@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'models/transaction.dart';
 import 'components/transaction_list.dart';
 import 'components/transaction_form.dart';
-
+import 'components/chart.dart';
 void main() {
   runApp(Expenses());
 }
@@ -12,6 +12,20 @@ class Expenses extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: expenses(),
+      theme: ThemeData(primarySwatch: Colors.green,
+      accentColor: Colors.amber,
+      fontFamily: 'Quicksand',
+      appBarTheme: AppBarTheme(
+        textTheme: ThemeData.light().textTheme.copyWith(
+          titleLarge:TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          )
+        )
+      )
+      ),
+      
     );
   }
 }
@@ -22,15 +36,22 @@ class expenses extends StatefulWidget {
 }
 
 class _expensesState extends State<expenses> {
-  final _transactions = [
-    Transaction(
-        id: 't1',
-        title: 'Novo Tênis de Corrida',
-        value: 310.76,
-        date: DateTime.now()),
-    Transaction(
-        id: 't2', title: 'Conta de Luz', value: 211.30, date: DateTime.now()),
-  ];
+  final List<Transaction> _transactions = [
+    Transaction(id: 't0', title: 'Conta Antiga', value: 310.76, date: DateTime.now().subtract(Duration(days: 3))
+    ),
+    Transaction(id: 't1', title: 'Novo Tenis de corrida', value: 400.00, date: DateTime.now().subtract(Duration(days: 33))),
+    Transaction(id: 't2', title: 'Conta de LUZ', value: 400.00, date: DateTime.now().subtract(Duration(days: 3))),
+    Transaction(id: 't4', title: 'jogo', value: 400.00, date: DateTime.now().subtract(Duration(days: 4))),
+    ];
+
+    List<Transaction> get _recentTransactions {
+      return _transactions.where((tr)
+      {
+        return tr.date.isAfter(DateTime.now().subtract(
+          Duration(days: 7)
+        ));
+      }).toList();
+    }
 
   _addTransaction(String title, double value) {
     var doubleValue = Random().nextDouble(); // Value is >= 0.0 and < 1.0.
@@ -44,6 +65,8 @@ class _expensesState extends State<expenses> {
     setState(() {
       _transactions.add(newTransaction);
     });
+
+    Navigator.of(context).pop();
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -59,7 +82,8 @@ class _expensesState extends State<expenses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Despesas Pessoais'),
+        title: Text('Despesas Pessoais',
+        style: TextStyle(fontFamily: 'OpenSans',),),
         actions: <Widget>[
           IconButton(
             onPressed: () => _openTransactionFormModal(context),
@@ -72,15 +96,8 @@ class _expensesState extends State<expenses> {
           //mainAxisAlignment: MainAxisAlignment.spaceAround,
           //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Colors.blue,
-                child: Text('Grafico'),
-                elevation: 5,
-              ),
-            ),
-            TransactionList(_transactions),
+              Chart(_recentTransactions),
+              TransactionList(_transactions),
           ],
         ),
       ),
