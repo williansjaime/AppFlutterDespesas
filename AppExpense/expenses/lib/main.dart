@@ -11,6 +11,7 @@ void main() {
 class Expenses extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: expenses(),
       theme: ThemeData(primarySwatch: Colors.green,
       accentColor: Colors.amber,
@@ -21,7 +22,11 @@ class Expenses extends StatelessWidget {
             fontFamily: 'OpenSans',
             fontSize: 18,
             fontWeight: FontWeight.bold,
-          )
+          ),
+          /*button: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          )*/
         )
       )
       ),
@@ -36,13 +41,7 @@ class expenses extends StatefulWidget {
 }
 
 class _expensesState extends State<expenses> {
-  final List<Transaction> _transactions = [
-    Transaction(id: 't0', title: 'Conta Antiga', value: 310.76, date: DateTime.now().subtract(Duration(days: 3))
-    ),
-    Transaction(id: 't1', title: 'Novo Tenis de corrida', value: 400.00, date: DateTime.now().subtract(Duration(days: 33))),
-    Transaction(id: 't2', title: 'Conta de LUZ', value: 400.00, date: DateTime.now().subtract(Duration(days: 3))),
-    Transaction(id: 't4', title: 'jogo', value: 400.00, date: DateTime.now().subtract(Duration(days: 4))),
-    ];
+  final List<Transaction> _transactions = [];
 
     List<Transaction> get _recentTransactions {
       return _transactions.where((tr)
@@ -53,20 +52,27 @@ class _expensesState extends State<expenses> {
       }).toList();
     }
 
-  _addTransaction(String title, double value) {
+  _addTransaction(String title, double value,DateTime date) {
     var doubleValue = Random().nextDouble(); // Value is >= 0.0 and < 1.0.
     doubleValue = Random().nextDouble() * 256;
     final newTransaction = Transaction(
         id: doubleValue.toString(),
         title: title,
         value: value,
-        date: DateTime.now());
+        date: date,
+        );
 
     setState(() {
       _transactions.add(newTransaction);
     });
 
     Navigator.of(context).pop();
+  }
+
+  _removeTransaction(String id){
+    setState(() {
+      _transactions.removeWhere((element) => element.id == id);
+    });
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -97,7 +103,7 @@ class _expensesState extends State<expenses> {
           //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
               Chart(_recentTransactions),
-              TransactionList(_transactions),
+              TransactionList(_transactions, _removeTransaction),
           ],
         ),
       ),

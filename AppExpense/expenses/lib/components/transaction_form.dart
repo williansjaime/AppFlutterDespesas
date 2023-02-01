@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:expenses/models/transaction.dart';
 
 class TransactionForm extends StatefulWidget {
-  final void Function(String, double) onSubmit;
+  final void Function(String, double,DateTime) onSubmit;
 
   TransactionForm(this.onSubmit);
 
@@ -13,17 +13,35 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionFormState extends State<TransactionForm> {
-  final titleController = TextEditingController();
-
-  final valueController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _valueController = TextEditingController();
+  var selectedData = DateTime.now();
 
   _submitForm() {
-    final title = titleController.text;
-    final value = double.tryParse(valueController.text) ?? 0.0;
-    if (title.isEmpty || value <= 0) {
+    final title = _titleController.text;
+    final value = double.tryParse(_valueController.text) ?? 0.0;
+    if (title.isEmpty || value <= 0 || selectedData == null) {
       return;
     }
-    widget.onSubmit(title, value);
+    widget.onSubmit(title, value,selectedData);
+  }
+
+  _showDatePicker(){
+    showDatePicker(
+      context: context, 
+      initialDate: DateTime.now(), 
+      firstDate: DateTime(2019), 
+      lastDate: DateTime.now()
+      ).then((picedDate) {
+        if(picedDate == null){
+          return;
+        }
+       
+       setState(() {
+         selectedData = picedDate; 
+       });
+       
+      });
   }
 
   @override
@@ -36,7 +54,7 @@ class _TransactionFormState extends State<TransactionForm> {
           children: <Widget>[
             TextField(
               //onChanged: (newValue) => title = newValue,
-              controller: titleController,
+              controller: _titleController,
               onSubmitted: (_) => _submitForm(),
               decoration: InputDecoration(
                 labelText: 'Titulo',
@@ -44,28 +62,51 @@ class _TransactionFormState extends State<TransactionForm> {
             ),
             TextField(
               //onChanged: (newValue) => valor = newValue,
-              controller: valueController,
+              controller: _valueController,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               onSubmitted: (_) => _submitForm(),
               decoration: InputDecoration(
                 labelText: 'Valor R\$',
               ),
             ),
+            Container(
+              height: 70,
+              child: Row(children: [
+                Expanded(
+                  child: Text(
+                    selectedData == null ?'Nenhuma data seleciondada!'
+                    : 'Data Selecionada: ${DateFormat('dd/MM/y').format(selectedData)}')),
+
+                TextButton(
+                  onPressed: _showDatePicker, 
+                  child: Text(
+                    'Selecionar Data',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 TextButton(
                   onPressed: () {
-                    final title = titleController.text;
-                    final value = double.tryParse(valueController.text) ?? 0.0;
-                    widget.onSubmit(title, value);
+                    _submitForm();
+                    /*{
+                    final title = _titleController.text;
+                    final value = double.tryParse(_valueController.text) ?? 0.0;
+                    widget.onSubmit(title, value);*/
                   },
+
                   child: Text(
                     "Nova transação",
                   ),
                   style: TextButton.styleFrom(
-                    primary: Colors.purple, // Text Color
+                    primary: Theme.of(context).primaryColor, // Text Color
                   ),
+                  
                 ),
               ],
             )

@@ -5,12 +5,13 @@ import 'package:expenses/models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transaction;
+  final void Function(String) onRemove;
 
-  TransactionList(this.transaction); //contrutor
+  TransactionList(this.transaction,this.onRemove); //contrutor
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: 430,
       child: transaction.isEmpty ? 
       Column(
         children: <Widget>[
@@ -28,6 +29,45 @@ class TransactionList extends StatelessWidget {
         itemBuilder: (ctx, index) {
           final tr = transaction[index];
             return Card(
+              elevation: 5,
+              margin: EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 5,                
+              ),
+              child: ListTile(
+                leading: CircleAvatar(
+                  radius: 30,
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: FittedBox(
+                    child: Text('R\$${tr.value}')
+                  ),
+                  ),
+                ),
+                title: Text(
+                  tr.title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                subtitle: Text(
+                  DateFormat('d MMM y').format(tr.date),
+                ),
+                trailing: IconButton(icon: Icon(Icons.delete),color: Theme.of(context).errorColor,
+                onPressed: () => onRemove(tr.id),
+                ),
+                ),
+            );
+            
+        },
+      ),
+    );
+  }
+}
+
+
+/*
+//Return Antigo caso precisar
+
+Card(
             child: Row(children: <Widget>[
               Container(
                 margin: EdgeInsets.symmetric(
@@ -66,8 +106,4 @@ class TransactionList extends StatelessWidget {
               )
             ]),
           );
-        },
-      ),
-    );
-  }
-}
+          */
