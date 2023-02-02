@@ -42,7 +42,7 @@ class expenses extends StatefulWidget {
 
 class _expensesState extends State<expenses> {
   final List<Transaction> _transactions = [];
-
+  
     List<Transaction> get _recentTransactions {
       return _transactions.where((tr)
       {
@@ -86,8 +86,7 @@ class _expensesState extends State<expenses> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    final appbar = AppBar(
         title: Text('Despesas Pessoais',
         style: TextStyle(fontFamily: 'OpenSans',),),
         actions: <Widget>[
@@ -96,14 +95,24 @@ class _expensesState extends State<expenses> {
             icon: Icon(Icons.add),
           )
         ],
-      ),
+      );
+    final avalableHeight = MediaQuery.of(context).size.height 
+    - appbar.preferredSize.height - 
+     MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      appBar: appbar,
       body: SingleChildScrollView(
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.spaceAround,
           //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-              Chart(_recentTransactions),
-              TransactionList(_transactions, _removeTransaction),
+              Container(
+                height: avalableHeight * 0.3,
+                child: Chart(_recentTransactions)),
+              Container(
+                height: avalableHeight * 0.7,
+                child: TransactionList(_transactions, _removeTransaction)),
           ],
         ),
       ),
