@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'models/transaction.dart';
 import 'components/transaction_list.dart';
 import 'components/transaction_form.dart';
@@ -10,6 +11,9 @@ void main() {
 
 class Expenses extends StatelessWidget {
   Widget build(BuildContext context) {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp
+  ]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: expenses(),
@@ -42,7 +46,9 @@ class expenses extends StatefulWidget {
 
 class _expensesState extends State<expenses> {
   final List<Transaction> _transactions = [];
-  
+  bool _showChart = false;
+
+
     List<Transaction> get _recentTransactions {
       return _transactions.where((tr)
       {
@@ -86,9 +92,12 @@ class _expensesState extends State<expenses> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appbar = AppBar(
         title: Text('Despesas Pessoais',
-        style: TextStyle(fontFamily: 'OpenSans',),),
+        style: TextStyle(fontFamily: 'OpenSans',),
+        ),
         actions: <Widget>[
           IconButton(
             onPressed: () => _openTransactionFormModal(context),
@@ -107,12 +116,26 @@ class _expensesState extends State<expenses> {
           //mainAxisAlignment: MainAxisAlignment.spaceAround,
           //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-              Container(
-                height: avalableHeight * 0.3,
-                child: Chart(_recentTransactions)),
-              Container(
-                height: avalableHeight * 0.7,
-                child: TransactionList(_transactions, _removeTransaction)),
+              if(isLandscape)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Exibir Grafico"),
+                    Switch(value: _showChart, onChanged: ((value) {
+                      setState(() {
+                        _showChart = value;
+                      });
+                    }))
+                  ],
+                ),
+              if(_showChart || !isLandscape)
+                Container(
+                  height: avalableHeight * (isLandscape? 0.7 : 0.30),
+                  child: Chart(_recentTransactions)),
+              if(!_showChart || !isLandscape)    
+                Container(
+                  height: avalableHeight * 0.70,
+                  child: TransactionList(_transactions, _removeTransaction)),
           ],
         ),
       ),

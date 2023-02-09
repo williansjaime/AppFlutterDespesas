@@ -11,15 +11,23 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return transaction.isEmpty ? 
-    Column(
-      children: <Widget>[
-      SizedBox(height: 20,),  
-      Text('Nenhum Transação Cadastrar!',
-      style: Theme.of(context).textTheme.titleLarge,),
-      SizedBox(height: 20,),
-      Container(
-        height:200,
-        child:Image.asset('assets/images/waiting.png',fit: BoxFit.cover,),),],
+
+    LayoutBuilder(
+      builder: (ctx, constraints) {
+        return Column(
+          children: <Widget>[
+          SizedBox(height: constraints.maxHeight * 0.05,),  
+          Container(
+            height: constraints.maxHeight * 0.3,
+            child: Text('Nenhum Transação Cadastrar!',
+            style: Theme.of(context).textTheme.titleLarge,),
+          ),
+          SizedBox(height: constraints.maxHeight * 0.05,),
+          Container(
+            height:constraints.maxHeight * 0.6,
+            child:Image.asset('assets/images/waiting.png',fit: BoxFit.cover,),),],
+        );
+      }
     ) 
     
     :ListView.builder(
