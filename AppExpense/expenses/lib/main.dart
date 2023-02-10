@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,8 @@ import 'models/transaction.dart';
 import 'components/transaction_list.dart';
 import 'components/transaction_form.dart';
 import 'components/chart.dart';
+import 'dart:io';
+
 void main() {
   runApp(Expenses());
 }
@@ -92,22 +95,32 @@ class _expensesState extends State<expenses> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final   mediaQuery = MediaQuery.of(context);
+    bool isLandscape = mediaQuery.orientation == Orientation.landscape;
 
     final appbar = AppBar(
         title: Text('Despesas Pessoais',
         style: TextStyle(fontFamily: 'OpenSans',),
         ),
         actions: <Widget>[
+          if(isLandscape)
+            IconButton(
+              onPressed: (){
+                setState(() {
+                  _showChart = !_showChart;
+                });
+              },
+              icon: Icon(_showChart? Icons.list :Icons.show_chart),
+            ),
           IconButton(
             onPressed: () => _openTransactionFormModal(context),
             icon: Icon(Icons.add),
           )
         ],
       );
-    final avalableHeight = MediaQuery.of(context).size.height 
+    final avalableHeight = mediaQuery.size.height 
     - appbar.preferredSize.height - 
-     MediaQuery.of(context).padding.top;
+     mediaQuery.padding.top;
 
     return Scaffold(
       appBar: appbar,
@@ -116,30 +129,35 @@ class _expensesState extends State<expenses> {
           //mainAxisAlignment: MainAxisAlignment.spaceAround,
           //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-              if(isLandscape)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Exibir Grafico"),
-                    Switch(value: _showChart, onChanged: ((value) {
-                      setState(() {
-                        _showChart = value;
-                      });
-                    }))
-                  ],
-                ),
+              // if(isLandscape)
+              //   Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       Text("Exibir Grafico"),
+              //       Switch.adaptive(
+              //         activeColor: Theme.of(context).accentColor,
+              //         value: _showChart, onChanged: ((value) {
+              //         setState(() {
+              //           _showChart = value;
+              //         });
+              //       }))
+              //     ],
+              //   ),
               if(_showChart || !isLandscape)
                 Container(
                   height: avalableHeight * (isLandscape? 0.7 : 0.30),
                   child: Chart(_recentTransactions)),
               if(!_showChart || !isLandscape)    
                 Container(
-                  height: avalableHeight * 0.70,
+                  height: avalableHeight * (isLandscape? 1 : 0.70),
                   child: TransactionList(_transactions, _removeTransaction)),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: Platform.isIOS ? 
+       Container()
+       :
+       FloatingActionButton(
         child: Icon(
           Icons.add,
         ),

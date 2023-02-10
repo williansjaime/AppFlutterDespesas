@@ -46,71 +46,78 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              //onChanged: (newValue) => title = newValue,
-              controller: _titleController,
-              onSubmitted: (_) => _submitForm(),
-              decoration: InputDecoration(
-                labelText: 'Titulo',
-              ),
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 10,
+            right: 10,
+            left:10,
+            bottom: 10 + MediaQuery.of(context).viewInsets.bottom,         
             ),
-            TextField(
-              //onChanged: (newValue) => valor = newValue,
-              controller: _valueController,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onSubmitted: (_) => _submitForm(),
-              decoration: InputDecoration(
-                labelText: 'Valor R\$',
-              ),
-            ),
-            Container(
-              height: 70,
-              child: Row(children: [
-                Expanded(
-                  child: Text(
-                    selectedData == null ?'Nenhuma data seleciondada!'
-                    : 'Data Selecionada: ${DateFormat('dd/MM/y').format(selectedData)}')),
-
-                TextButton(
-                  onPressed: _showDatePicker, 
-                  child: Text(
-                    'Selecionar Data',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              ],),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    _submitForm();
-                    /*{
-                    final title = _titleController.text;
-                    final value = double.tryParse(_valueController.text) ?? 0.0;
-                    widget.onSubmit(title, value);*/
-                  },
-
-                  child: Text(
-                    "Nova transação",
-                  ),
-                  style: TextButton.styleFrom(
-                    primary: Theme.of(context).primaryColor, // Text Color
-                  ),
-                  
+          child: Column(
+            children: <Widget>[
+              TextField(
+                //onChanged: (newValue) => title = newValue,
+                controller: _titleController,
+                onSubmitted: (_) => _submitForm(),
+                decoration: InputDecoration(
+                  labelText: 'Titulo',
                 ),
-              ],
-            )
-          ],
+              ),
+              TextField(
+                //onChanged: (newValue) => valor = newValue,
+                controller: _valueController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onSubmitted: (_) => _submitForm(),
+                decoration: InputDecoration(
+                  labelText: 'Valor R\$',
+                ),
+              ),
+              Container(
+                height: 70,
+                child: Row(children: [
+                  Expanded(
+                    child: Text(
+                      selectedData == null ?'Nenhuma data seleciondada!'
+                      : 'Data Selecionada: ${DateFormat('dd/MM/y').format(selectedData)}')),
+    
+                  TextButton(
+                    onPressed: _showDatePicker, 
+                    child: Text(
+                      'Selecionar Data',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                ],),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      _submitForm();
+                      /*{
+                      final title = _titleController.text;
+                      final value = double.tryParse(_valueController.text) ?? 0.0;
+                      widget.onSubmit(title, value);*/
+                    },
+    
+                    child: Text(
+                      "Nova transação",
+                    ),
+                    style: TextButton.styleFrom(
+                      primary: Theme.of(context).primaryColor, // Text Color
+                    ),
+                    
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
