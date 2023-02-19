@@ -2,6 +2,9 @@ import 'package:intl/intl.dart';
 import '../models/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:expenses/models/transaction.dart';
+import 'adptative_button.dart';
+import 'adaptative_textfield.dart';
+
 
 class TransactionForm extends StatefulWidget {
   final void Function(String, double,DateTime) onSubmit;
@@ -58,22 +61,17 @@ class _TransactionFormState extends State<TransactionForm> {
             ),
           child: Column(
             children: <Widget>[
-              TextField(
-                //onChanged: (newValue) => title = newValue,
-                controller: _titleController,
+              AdaptativeTextFild(
+                label:"Titulo", 
+                controller: _titleController, 
                 onSubmitted: (_) => _submitForm(),
-                decoration: InputDecoration(
-                  labelText: 'Titulo',
-                ),
+                
               ),
-              TextField(
-                //onChanged: (newValue) => valor = newValue,
+              AdaptativeTextFild(
+                label: 'Valor R\$',
                 controller: _valueController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 onSubmitted: (_) => _submitForm(),
-                decoration: InputDecoration(
-                  labelText: 'Valor R\$',
-                ),
               ),
               Container(
                 height: 70,
@@ -97,7 +95,12 @@ class _TransactionFormState extends State<TransactionForm> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  TextButton(
+                   AdaptativeButton(
+                    'Nova Transação',
+                    _submitForm,
+                  ),
+                  //AdaptiveButton(label: "Nova transação", onPressd: _submitForm())
+                  /*TextButton(
                     onPressed: () {
                       _submitForm();
                       /*{
@@ -111,9 +114,8 @@ class _TransactionFormState extends State<TransactionForm> {
                     ),
                     style: TextButton.styleFrom(
                       primary: Theme.of(context).primaryColor, // Text Color
-                    ),
-                    
-                  ),
+                    ),                    
+                  ),*/
                 ],
               )
             ],
